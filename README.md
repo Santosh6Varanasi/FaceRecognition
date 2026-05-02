@@ -11,6 +11,8 @@ A comprehensive face recognition system with video processing capabilities, buil
 - **Model Training**: Train custom face recognition models with your own data
 - **Interactive Timeline**: Visual timeline showing when people appear in videos
 - **Bulk Operations**: Efficiently manage multiple unknown faces at once
+- **Dark Mode**: Toggle between light and dark themes with automatic preference saving
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 
 ### Advanced Features
 - **Detection Overlay**: Real-time bounding boxes and labels on video playback
@@ -18,6 +20,14 @@ A comprehensive face recognition system with video processing capabilities, buil
 - **Video Reprocessing**: Reprocess videos with updated models
 - **Face Deduplication**: Automatic detection of duplicate faces
 - **Confidence Scoring**: Recognition confidence levels for each detection
+- **Centralized Logging**: Structured JSON logs with correlation IDs for request tracing
+- **Performance Monitoring**: Automatic tracking of slow operations and performance metrics
+
+### Modern Architecture
+- **Zoneless Angular**: Improved performance with signal-based reactivity
+- **Tailwind CSS**: Utility-first styling with consistent design system
+- **Next.js 16**: Latest App Router with enhanced performance
+- **Structured Logging**: JSON-formatted logs with automatic rotation and retention
 
 ## 📋 Table of Contents
 
@@ -26,17 +36,20 @@ A comprehensive face recognition system with video processing capabilities, buil
 - [Database Setup](#database-setup)
 - [Model Training](#model-training)
 - [Running the Application](#running-the-application)
+- [Theme System](#theme-system)
+- [Logging System](#logging-system)
 - [Architecture](#architecture)
 - [API Documentation](#api-documentation)
 - [Troubleshooting](#troubleshooting)
+- [Documentation](#documentation)
 
 ## 💻 System Requirements
 
 ### Software Requirements
 - **Python**: 3.8 or higher
-- **Node.js**: 16.x or higher
+- **Node.js**: 18.x or higher (required for Next.js 16)
 - **PostgreSQL**: 12.x or higher
-- **npm**: 8.x or higher
+- **npm**: 9.x or higher
 
 ### Hardware Requirements
 - **RAM**: Minimum 8GB (16GB recommended)
@@ -219,6 +232,99 @@ Frontend will run on: `http://localhost:4200`
 
 Open your browser and navigate to: `http://localhost:4200`
 
+## 🎨 Theme System
+
+The application supports both light and dark themes with automatic preference saving.
+
+### Using the Theme Toggle
+
+1. **Locate the theme toggle** in the top navigation bar (sun/moon icon)
+2. **Click to switch** between light and dark modes
+3. **Theme preference is saved** automatically to localStorage
+4. **System preference detection**: If no preference is saved, the app uses your system's theme preference
+
+### Theme Features
+
+- **Instant switching**: Theme changes apply within 100ms
+- **Persistent preference**: Your choice is remembered across sessions
+- **WCAG AA compliant**: Both themes meet accessibility color contrast standards
+- **Responsive**: Works seamlessly across all device sizes
+
+### Customizing Themes
+
+Theme colors are defined using CSS custom properties in `angular_frontend/src/styles.css`:
+
+```css
+:root {
+  --color-background: 255 255 255;
+  --color-foreground: 15 23 42;
+  --color-primary: 59 130 246;
+  /* ... more colors */
+}
+
+.dark {
+  --color-background: 15 23 42;
+  --color-foreground: 248 250 252;
+  --color-primary: 96 165 250;
+  /* ... more colors */
+}
+```
+
+For more details, see [docs/THEME_SYSTEM.md](docs/THEME_SYSTEM.md).
+
+## 📊 Logging System
+
+The application uses a centralized logging system with structured JSON logs and correlation IDs for request tracing.
+
+### Log Directory Structure
+
+```
+logs/
+├── nextjs/
+│   ├── app.log          # Application logs
+│   ├── error.log        # Error logs
+│   └── *.log.gz         # Rotated/compressed logs
+└── flask/
+    ├── app.log          # Application logs
+    ├── error.log        # Error logs
+    ├── performance.log  # Performance metrics
+    └── *.log.gz         # Rotated/compressed logs
+```
+
+### Environment Variables
+
+Configure logging in your `.env` files:
+
+```env
+# Logging Configuration
+LOG_DIR=/path/to/logs
+LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+```
+
+### Features
+
+- **Structured JSON logs**: Machine-readable format for easy parsing
+- **Correlation IDs**: Trace requests across Angular → Next.js → Flask
+- **Automatic rotation**: Logs rotate at 100MB with 5 backup files
+- **Sensitive data sanitization**: Passwords, tokens, and API keys are automatically redacted
+- **Performance monitoring**: Automatic warnings for slow operations (>1000ms)
+
+### Viewing Logs
+
+```bash
+# Real-time monitoring
+tail -f logs/nextjs/app.log
+tail -f logs/flask/app.log
+
+# Parse JSON logs
+cat logs/nextjs/app.log | jq '.'
+
+# Search by correlation ID
+grep "angular-1234567890-abc" logs/**/*.log
+```
+
+For complete logging documentation, see [docs/LOGGING.md](docs/LOGGING.md).
+
 ## 🏗️ Architecture
 
 ### System Architecture
@@ -253,17 +359,21 @@ Open your browser and navigate to: `http://localhost:4200`
 ### Technology Stack
 
 **Frontend:**
-- Angular 17.x
-- TypeScript
+- Angular 21.x (Zoneless architecture with signals)
+- TypeScript 5.9+
+- Tailwind CSS 3.4+ (Utility-first styling with dark mode)
 - RxJS
 - HTML5 Canvas (for detection overlay)
 
 **Backend:**
+- Next.js 16.x (App Router)
+- React 19.x
 - Flask 2.x
 - Python 3.8+
 - face_recognition library
 - scikit-learn (SVM classifier)
 - OpenCV (video processing)
+- Winston (Structured logging)
 
 **Database:**
 - PostgreSQL 12+
@@ -272,6 +382,11 @@ Open your browser and navigate to: `http://localhost:4200`
 - dlib (face detection)
 - face_recognition (face encoding)
 - SVM (classification)
+
+**Infrastructure:**
+- Centralized logging with correlation IDs
+- JSON-formatted structured logs
+- Automatic log rotation and retention
 
 ## 📚 API Documentation
 
@@ -438,3 +553,44 @@ If you encounter issues not covered here:
 ## 📧 Contact
 
 [Add contact information here]
+
+---
+
+## 📖 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+### Setup & Configuration
+- **[LOCAL_SETUP.md](docs/LOCAL_SETUP.md)** - Detailed local development setup guide
+- **[DATABASE.md](docs/DATABASE.md)** - Database schema and management
+- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment instructions
+
+### Architecture & Design
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture and design decisions
+- **[IMPLEMENTATION_ROADMAP.md](docs/IMPLEMENTATION_ROADMAP.md)** - Development roadmap and milestones
+
+### Features & Systems
+- **[THEME_SYSTEM.md](docs/THEME_SYSTEM.md)** - Theme system implementation and customization
+- **[LOGGING.md](docs/LOGGING.md)** - Centralized logging system documentation
+- **[LOG_RETENTION_POLICY.md](docs/LOG_RETENTION_POLICY.md)** - Log retention and cleanup policies
+
+### Testing & Validation
+- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** - Testing strategies and guidelines
+- **[PERFORMANCE_BENCHMARKS.md](docs/PERFORMANCE_BENCHMARKS.md)** - Performance metrics and benchmarks
+- **[END_TO_END_VALIDATION_SUMMARY.md](docs/END_TO_END_VALIDATION_SUMMARY.md)** - Complete validation results
+- **[TASK_21_QUICK_START.md](docs/TASK_21_QUICK_START.md)** - Quick start validation guide
+
+### Migration & Tools
+- **[BULK_TRAINING_TOOL_MIGRATION.md](docs/BULK_TRAINING_TOOL_MIGRATION.md)** - Bulk training tool migration guide
+
+### Research & Analysis
+- **[CAPSTONE_IEEE_ANALYSIS.md](docs/CAPSTONE_IEEE_ANALYSIS.md)** - Capstone project IEEE analysis
+- **[IEEE_SIMILAR_PROJECTS.md](docs/IEEE_SIMILAR_PROJECTS.md)** - Similar IEEE projects analysis
+
+### Quick Links
+- 🚀 **Getting Started**: [LOCAL_SETUP.md](docs/LOCAL_SETUP.md)
+- 🏗️ **Architecture**: [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- 🎨 **Themes**: [THEME_SYSTEM.md](docs/THEME_SYSTEM.md)
+- 📊 **Logging**: [LOGGING.md](docs/LOGGING.md)
+- 🧪 **Testing**: [TESTING_GUIDE.md](docs/TESTING_GUIDE.md)
+- 🚀 **Deployment**: [DEPLOYMENT.md](docs/DEPLOYMENT.md)
