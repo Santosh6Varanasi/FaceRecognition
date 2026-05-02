@@ -1,0 +1,10 @@
+{
+  "api_base_url": "http://localhost:5000",
+  "camera_index": 0,
+  "camera_width": 640,
+  "camera_height": 480,
+  "api_timeout": 5,
+  "max_fps": 10,
+  "display_window_name": "Face Recognition",
+  "jpeg_quality": 85
+}
