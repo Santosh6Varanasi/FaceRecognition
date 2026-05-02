@@ -1,0 +1,117 @@
+<div class="training-container">
+  <div class="page-header">
+    <h1>Train Face Recognition Model</h1>
+    <p>Upload face images, label them with person names, and retrain the model to recognize new faces.</p>
+  </div>
+
+  <!-- File Upload Section -->
+  <div class="upload-section">
+    <input
+      type="file"
+      #fileInput
+      multiple
+      accept="image/*"
+      (change)="onFileSelect($event)"
+      style="display: none;">
+    <button class="btn-primary" (click)="fileInput.click()">
+      Select Images
+    </button>
+    <span class="upload-hint">Select one or more images (JPG, PNG, BMP, WEBP)</span>
+  </div>
+
+  <!-- Image Preview Grid -->
+  @if (uploadedImages().length > 0) {
+    <div class="preview-grid">
+      @for (img of uploadedImages(); track img.id) {
+        <div class="image-card" [class.error]="img.status === 'error'">
+          <img [src]="img.preview" alt="Preview" class="image-preview" />
+          <!-- Status Badge -->
+          <div class="status-badge" [ngClass]="{
+            'status-pending': img.status === 'pending',
+            'status-uploading': img.status === 'uploading',
+            'status-success': img.status === 'success',
+            'status-error': img.status === 'error'
+          }">
+            {{ img.status }}
+          </div>
+          <!-- Labeling Form (shown after successful upload) -->
+          @if (img.status === 'success' && !img.isLabeled) {
+            <div class="label-form">
+              <input
+                type="text"
+                [(ngModel)]="img.personName"
+                placeholder="Enter person name"
+                [attr.list]="'people-list-' + img.id"
+                class="person-name-input">
+              <datalist id="people-list-{{img.id}}">
+                @for (person of people(); track person.id) {
+                  <option [value]="person.name">
+                }
+              </datalist>
+              <button class="btn-label" (click)="labelImage(img)">Label</button>
+            </div>
+          }
+          <!-- Labeled Status -->
+          @if (img.isLabeled) {
+            <div class="labeled-status">
+              ✓ Labeled as: {{ img.personName }}
+            </div>
+          }
+          <!-- Error Message -->
+          @if (img.errorMessage) {
+            <div class="error-message">
+              {{ img.errorMessage }}
+            </div>
+          }
+          <!-- Detection Info -->
+          @if (img.detectionConfidence) {
+            <div class="detection-info">
+              Confidence: {{ (img.detectionConfidence * 100).toFixed(1) }}%
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Retrain Section -->
+  @if (uploadedImages().length > 0) {
+    <div class="retrain-section">
+      <button
+        class="btn-retrain"
+        [disabled]="!canRetrain()"
+        (click)="triggerRetraining()">
+        Retrain Model
+      </button>
+      <!-- Retraining Progress -->
+      @if (retrainingJob().status === 'running') {
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="retrainingJob().progress"></div>
+          </div>
+          <p class="progress-message">{{ retrainingJob().message }}</p>
+        </div>
+      }
+      <!-- Retraining Result -->
+      @if (retrainingJob().status === 'completed') {
+        <div class="success-message">
+          ✓ Model retrained successfully: version {{ retrainingJob().versionNumber }},
+          accuracy {{ (retrainingJob().cvAccuracy! * 100).toFixed(1) }}%
+        </div>
+      }
+      <!-- Retraining Error -->
+      @if (retrainingJob().status === 'failed') {
+        <div class="error-banner">
+          ✗ {{ retrainingJob().message }}
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (uploadedImages().length === 0) {
+    <div class="empty-state">
+      <p>No images uploaded yet. Click "Select Images" to get started.</p>
+    </div>
+  }
+</div>
