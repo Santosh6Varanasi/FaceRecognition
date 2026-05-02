@@ -45,6 +45,22 @@ wheels/
 .installed.cfg
 *.egg
 
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Media folders
+video/
+videos/
+images/
+image/
+unknown_face_images/
+video_uploads_labeled_images/
+face_recognition_app/flask_api/labeled_face_images/
+face_recognition_app/flask_api/video_uploads/
+
 # Node
 node_modules/
 npm-debug.log*
