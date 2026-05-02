@@ -1,0 +1,4 @@
+# Bulk Training Tool Requirements
+# These are already included in the main Flask API requirements
+
+click>=8.0.0
